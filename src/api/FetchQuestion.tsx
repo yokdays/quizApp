@@ -10,3 +10,5 @@ export const fetchQuizQuestions = async ({ subject }: QuizParams) => {
   const data = await response.json();
   return data;
 };
+
+

@@ -10,6 +10,16 @@ const quizzes = {
         options: ['3x', '6x', '9x^2', '6x^2'],
         answer: '6x',
       },
+      {
+        question: 'What is the synonym of "happy"?',
+        options: ['Sad', 'Joyful', 'Angry', 'Tired'],
+        answer: 'Joyful',
+      },
+      {
+        question: 'Choose the correct verb form: She ____ to the store.',
+        options: ['go', 'going', 'gone', 'goes'],
+        answer: 'goes',
+      },
       // คำถามอื่นๆ ในควิซคณิตศาสตร์
     ],
     English: [

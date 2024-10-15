@@ -27,13 +27,17 @@ const App: FC = () => {
 
 const ProtectedApp: FC = () => {
   const navigate = useNavigate();
+  const location = window.location.pathname; // ตรวจสอบ path ปัจจุบัน
 
   useEffect(() => {
-    const isTokenValid = checkTokenExpiration();
-    if (!isTokenValid) {
-      navigate('/login');
+    // ไม่ตรวจสอบ token 
+    if (location !== '/' && location !== '/login' && location !== '/register') {
+      const isTokenValid = checkTokenExpiration();
+      if (!isTokenValid) {
+        navigate('/login');
+      }
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   return (
     <div className="container">

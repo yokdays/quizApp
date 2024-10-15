@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { fetchQuizQuestions } from '../api/FetchQuestion'; // ดึงฟังก์ชัน fetchQuizQuestions มาใช้
 
 
 const EnglishQuiz: FC = () => {
   const [score, setScore] = useState<number | null> (null); // ใช้ state เก็บคะแนนล่าสุด
   const [totalQuestions, setTotalQuestions] = useState<number | null>(null); // ใช้ state เก็บจำนวนคำถามทั้งหมด
-  const navigate = useNavigate();
 
-
+  
   useEffect(() => {
     const subject = 'English'
     const loadQuestions = async () => {
@@ -24,7 +22,7 @@ const EnglishQuiz: FC = () => {
     if (savedScore) {
       setScore(Number(savedScore)); // แปลงค่าที่ดึงมาเป็นตัวเลข
     }
-  }, [navigate]);
+  }, []);
   
   return (
     <div>
