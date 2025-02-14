@@ -26,17 +26,22 @@ const MathQuiz: FC = () => {
   }, [navigate]);
 
   return (
-    <div>
-      <h2>Welcome to the Quiz App</h2>
-      {mathScore !== null ? (
-        <h3>Your last score: {mathScore}/{totalQuestions}</h3> // แสดงคะแนนล่าสุดหากมี
-      ) : (
-        <p>Take the quiz to see your score!</p> // ข้อความเมื่อยังไม่มีการทำควิซ
-      )}
-      <Link to="/math-test">
-        <button>Start Quiz</button>
-      </Link>
+     <div className="flex flex-col items-center justify-center p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md text-center">
+        <h2 className="text-2xl font-bold text-gray-800">Welcome to the Quiz App</h2>
+        {mathScore !== null ? (
+          <h3 className="mt-4 text-lg text-gray-700">Your last score: <span className="font-semibold">{mathScore}/{totalQuestions}</span></h3>
+        ) : (
+          <p className="mt-4 text-gray-600">Take the quiz to see your score!</p>
+        )}
+        <Link to="/math-test">
+          <button className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            Start Quiz
+          </button>
+        </Link>
+      </div>
     </div>
+      
   )
 }
 

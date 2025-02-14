@@ -15,13 +15,18 @@ interface Answer {
   isCorrect: boolean;
 }
 
-interface Props{
+interface Props {
   subject: string;
 }
 
+const optionColors = [
+  'bg-red-500', // Red for option 1
+  'bg-green-500', // Green for option 2
+  'bg-blue-500', // Blue for option 3
+  'bg-yellow-500', // Yellow for option 4
+];
 
-
-const Quiz: FC<Props>  = ({subject}) => {
+const Quiz: FC<Props> = ({ subject }) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Answer[]>([]);
@@ -31,7 +36,7 @@ const Quiz: FC<Props>  = ({subject}) => {
 
   useEffect(() => {
     const loadQuestions = async () => {
-      const fetchedQuestions = await fetchQuizQuestions({subject});
+      const fetchedQuestions = await fetchQuizQuestions({ subject });
       setQuestions(fetchedQuestions);
     };
 
@@ -51,18 +56,17 @@ const Quiz: FC<Props>  = ({subject}) => {
     const currentQuestion = questions[currentQuestionIndex];
     const isCorrect = selectedAnswer === currentQuestion.answer;
 
-    // เพิ่มคะแนนถ้าคำตอบถูกต้อง
     if (isCorrect) {
-      setScore(prevScore => prevScore + 1);
+      setScore((prevScore) => prevScore + 1);
     }
 
-    setUserAnswers(prevAnswers => [
+    setUserAnswers((prevAnswers) => [
       ...prevAnswers,
       {
         question: currentQuestion.question,
-        selectedAnswer: selectedAnswer,
+        selectedAnswer,
         correctAnswer: currentQuestion.answer,
-        isCorrect: isCorrect,
+        isCorrect,
       },
     ]);
 
@@ -72,27 +76,28 @@ const Quiz: FC<Props>  = ({subject}) => {
       setCurrentQuestionIndex(nextQuestionIndex);
       setSelectedAnswer(null); // Reset selection for next question
     } else {
-      setIsQuizFinished(true); // ทำข้อสอบเสร็จ
+      setIsQuizFinished(true); // Finish the quiz
     }
   };
 
-  // เมื่อควิซเสร็จให้บันทึกคะแนนลง LocalStorage
   useEffect(() => {
     if (isQuizFinished) {
-      // บันทึกคะแนนลง Local Storage (แทนที่คะแนนเดิม)
       localStorage.setItem(`${subject}Score`, score.toString());
     }
-  }, [isQuizFinished, score]); // ทำงานเมื่อ isQuizFinished หรือ score เปลี่ยนแปลง
+  }, [isQuizFinished, score]);
 
   if (isQuizFinished) {
     return (
-      <div>
-        <h2>Quiz Finished!</h2>
-        <h3>Your Score: {score}</h3>
-        <h3>Your Results:</h3>
-        <ul>
+      <div className="text-center p-4">
+        <h2 className="text-2xl font-semibold">Quiz Finished!</h2>
+        <h3 className="text-xl mt-2">Your Score: {score}</h3>
+        <h3 className="text-lg mt-4">Your Results:</h3>
+        <ul className="mt-2">
           {userAnswers.map((answer, index) => (
-            <li key={index} style={{ color: answer.isCorrect ? 'green' : 'red' }}>
+            <li
+              key={index}
+              className={`p-2 ${answer.isCorrect ? 'text-green-500' : 'text-red-500'}`}
+            >
               <strong>Q{index + 1}:</strong> {answer.question}
               <br />
               Your answer: {answer.selectedAnswer}
@@ -108,30 +113,35 @@ const Quiz: FC<Props>  = ({subject}) => {
   }
 
   if (questions.length === 0) {
-    return <div>Loading questions...</div>;
+    return <div className="text-center p-4">Loading questions...</div>;
   }
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div>
-      <h2>Question {currentQuestionIndex + 1}:</h2>
-      <h3>{currentQuestion.question}</h3>
-      <ul>
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-4">Question {currentQuestionIndex + 1}:</h2>
+      <h3 className="text-lg mb-6">{currentQuestion.question}</h3>
+      <div className="grid grid-cols-2 gap-6 mb-6">
         {currentQuestion.options.map((option, index) => (
-          <li key={index}>
-            <button
-              onClick={() => handleAnswerSelection(option)}
-              style={{
-                backgroundColor: selectedAnswer === option ? 'lightblue' : 'white',
-              }}
-            >
-              {option}
-            </button>
-          </li>
+          <button
+            key={index}
+            onClick={() => handleAnswerSelection(option)}
+            className={`w-full p-4 border-2 rounded-lg text-lg font-medium ${optionColors[index % optionColors.length]} 
+            ${selectedAnswer === option ? 'text-white' : 'text-gray-800'} shadow-md hover:shadow-lg focus:ring-2 focus:ring-blue-500 transition-all ease-in-out duration-300`}
+          >
+            {option}
+          </button>
         ))}
-      </ul>
-      <button onClick={handleNext}>Next</button>
+      </div>
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={handleNext}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

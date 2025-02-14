@@ -17,67 +17,67 @@ const { fetchQuizByCategory } = require('./quizController');
 const SECRET_KEY = process.env.SECRET_KEY; // รับค่า SECRET_KEY จากไฟล์ .env
 
 // เชื่อมต่อ MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'admin', // เปลี่ยนเป็นผู้ใช้ของคุณ
-  password: 'root', // เปลี่ยนเป็นรหัสผ่านของคุณ
-  database: 'myquizapp', // ชื่อฐานข้อมูล
-});
+// const db = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'admin', // เปลี่ยนเป็นผู้ใช้ของคุณ
+//   password: 'root', // เปลี่ยนเป็นรหัสผ่านของคุณ
+//   database: 'myquizapp', // ชื่อฐานข้อมูล
+// });
 
-// เชื่อมต่อฐานข้อมูล
-db.connect(err => {
-  if (err) throw err;
-  console.log('MySQL connected...');
-});
+// // เชื่อมต่อฐานข้อมูล
+// db.connect(err => {
+//   if (err) throw err;
+//   console.log('MySQL connected...');
+// });
 
-// API สำหรับดูข้อมูลผู้ใช้
-app.get('/users', (req, res) => {
-  const sql = 'SELECT * FROM users';
-  db.query(sql, (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
+// // API สำหรับดูข้อมูลผู้ใช้
+// app.get('/users', (req, res) => {
+//   const sql = 'SELECT * FROM users';
+//   db.query(sql, (err, results) => {
+//     if (err) throw err;
+//     res.json(results);
+//   });
+// });
 
-// สมัครสมาชิก
-app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); // เข้ารหัสรหัสผ่าน
-  db.query(
-    'INSERT INTO users (username, password) VALUES (?, ?)',
-    [username, hashedPassword],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to register' });
-      }
-      res.status(201).json({ message: 'User registered' });
-    }
-  );
-});
+// // สมัครสมาชิก
+// app.post('/register', async (req, res) => {
+//   const { username, password } = req.body;
+//   const hashedPassword = await bcrypt.hash(password, 10); // เข้ารหัสรหัสผ่าน
+//   db.query(
+//     'INSERT INTO users (username, password) VALUES (?, ?)',
+//     [username, hashedPassword],
+//     (err, result) => {
+//       if (err) {
+//         return res.status(500).json({ error: 'Failed to register' });
+//       }
+//       res.status(201).json({ message: 'User registered' });
+//     }
+//   );
+// });
 
-// ล็อคอิน
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+// // ล็อคอิน
+// app.post('/login', (req, res) => {
+//   const { username, password } = req.body;
 
-  db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-    if (err || results.length === 0) {
-      return res.status(400).json({ error: 'User not found' });
-    }
+//   db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+//     if (err || results.length === 0) {
+//       return res.status(400).json({ error: 'User not found' });
+//     }
 
-    const user = results[0];
-    const validPassword = await bcrypt.compare(password, user.password);
+//     const user = results[0];
+//     const validPassword = await bcrypt.compare(password, user.password);
 
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Incorrect password' });
-    }
+//     if (!validPassword) {
+//       return res.status(401).json({ error: 'Incorrect password' });
+//     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
-      expiresIn: '1h',
-    });
+//     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
+//       expiresIn: '1h',
+//     });
 
-    res.json({ message: 'Login successful', token });
-  });
-});
+//     res.json({ message: 'Login successful', token });
+//   });
+// });
 
 // Middleware ตรวจสอบ token
 const authenticateToken = (req, res, next) => {
